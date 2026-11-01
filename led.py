@@ -33,6 +33,12 @@ class LED:
         """
         self.pico_led.value(0)
 
+    def toggle(self) -> None:
+        """
+        method flips the led: on becomes off, off becomes on
+        """
+        self.pico_led.toggle()
+
     def is_on(self) -> bool:
         """
         method returns True if the led is currently on, False if it is off
