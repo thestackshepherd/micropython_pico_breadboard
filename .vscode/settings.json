@@ -13,6 +13,7 @@
         "~/.micropico-stubs/included"
     ],
     "pylint.args": [
-        "--disable=import-error"
+        "--disable=import-error",
+        "--ignored-modules=time,machine"
     ]
 }
