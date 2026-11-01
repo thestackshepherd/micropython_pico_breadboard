@@ -31,20 +31,17 @@ def is_interval_elapsed(last_ms: int, now_ms: int, interval_ms: int) -> bool:
     """
     return time.ticks_diff(now_ms, last_ms) >= interval_ms
 
-def killall() -> None:
+def killall(
+        logger: Log,
+        pico_device_led: LED,
+        gp12_device_rgbled: RGBLED,
+        gp13_device_buzzer: Buzzer,
+    ) -> None:
     """
     turns off all devices, so the pico isn't left in a random state.
+    uses the devices main() already created: building new ones would put a
+    second NeoPixel, PWM and Timer on the same pins.
     """
-    logger = Log()
-    # Instantiate the devices to turn them off.
-    try:
-        pico_device_led = LED(Pin("LED", Pin.OUT))
-        gp12_device_rgbled = RGBLED(Pin(12, Pin.OUT))
-        gp13_device_buzzer = Buzzer(BUZZER_FREQUENCY, Pin(BUZZER_PIN))
-    except (ValueError, OSError) as e:
-        # ValueError: bad pin id/name, OSError: hardware or driver failure
-        logger.error(f"pico2w setup failed: {e}")
-        return
     # Try to turn off pico led
     try:
         pico_device_led.turn_led_off()
@@ -113,7 +110,7 @@ def main() -> None:
         logger.error(f"unexpected {type(e).__name__} in main loop: {e}")
     finally:
         # runs on Ctrl+C / Stop, so the led isn't left in a random state
-        killall()
+        killall(logger, pico_device_led, gp12_device_rgbled, gp13_device_buzzer)
         logger.info("main loop stopped")
 
 
